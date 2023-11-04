@@ -64,9 +64,9 @@ void Memory::Card::Flip(bool isFront) {
 void Memory::Card::Draw(Gdiplus::Graphics& graphics) {
 	// mIsFront 값에 따라 앞면 또는 뒷면 이미지를 그림
 	if (mIsFront) {
-		graphics.DrawImage(mFront.get(), mX, mY, mFront->GetWidth(), mFront->GetHeight());
+		graphics.DrawImage(mFront.get(), mX, mY, 100, 140);
 	} else {
-		graphics.DrawImage(mBack.get(), mX, mY, mBack->GetWidth(), mBack->GetHeight());
+		graphics.DrawImage(mBack.get(), mX, mY, 100, 140);
 	}
 }
 

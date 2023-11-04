@@ -11,7 +11,7 @@ namespace Memory {
 		const int BOARD_COL = 8;
 
 		// 클릭수를 표현하기 위한 직사각형 좌표 영역
-		const Gdiplus::RectF mCountRect{ 885.0f, 60.0f, 120.0f, 30.0f };
+		const Gdiplus::RectF mCountRect{ 885.0f, 60.0f, 120.0f, 50.0f };
 
 		// 배경 이미지를 기리킬 포인터
 		std::unique_ptr<Gdiplus::Image> mBackground;
