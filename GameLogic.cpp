@@ -117,15 +117,15 @@ void Memory::GameLogic::OnClick(int x, int y) {
 	} else {
 		// 같은 카드를 선택한 것이 아니라면
 		if (pCard != nullptr && mpPrevious != nullptr && mpPrevious != pCard) {
-			// 짝이 맞는 경우
+			// 짝이 맞는 경우 보이지 않게 함
 			if (pCard->GetType() == mpPrevious->GetType()) {
 				mpPrevious->Invalidate();
 				pCard->Invalidate();
 
-				mDeck.remove_if([&](Card& card) {return card.GetIndex() == pCard->GetIndex(); });
-				mDeck.remove_if([&](Card& card) {return card.GetIndex() == mpPrevious->GetIndex(); });
-
+				mDeck.remove_if([&](Card& card) { return card.GetIndex() == pCard->GetIndex(); });
+				mDeck.remove_if([&](Card& card) { return card.GetIndex() == mpPrevious->GetIndex(); });
 			} else {
+				// 짝이 안 맞다면 약간 기다리고 모두 뒤집기
 				UpdateWindow(mHwnd);
 				Sleep(300);
 				pCard->Flip(false);
