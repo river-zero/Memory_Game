@@ -64,16 +64,16 @@ void Memory::Card::Flip(bool isFront) {
 void Memory::Card::Draw(Gdiplus::Graphics& graphics) {
 	// mIsFront 값에 따라 앞면 또는 뒷면 이미지를 그림
 	if (mIsFront) {
-		graphics.DrawImage(mFront.get(), mX, mY, 100, 140);
+		graphics.DrawImage(mFront.get(), mX, mY, mFront->GetWidth(), mFront->GetHeight());
 	} else {
-		graphics.DrawImage(mBack.get(), mX, mY, 100, 140);
+		graphics.DrawImage(mBack.get(), mX, mY, mFront->GetWidth(), mFront->GetHeight());
 	}
 }
 
 void Memory::Card::Invalidate() {
 	// rct로 지정된 영역을 무효화
 	RECT rct{ mX, mY, 
-		static_cast<LONG>(mX + mFront->GetWidth()), 
+		static_cast<LONG>(mX + mFront->GetWidth()),
 		static_cast<LONG>(mY + mFront->GetHeight()) };
 	InvalidateRect(mHwnd, &rct, false);
 }
