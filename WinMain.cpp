@@ -1,11 +1,14 @@
 #include <windows.h>
 #include <gdiplus.h>
+#include "GameLogic.h"
 
 #pragma comment (lib, "Gdiplus.lib")
 
 using namespace Gdiplus;
 
 const wchar_t gClassName[] = L"WindowClass";
+
+Memory::GameLogic gLogic;
 
 LRESULT CALLBACK WindowProc(
 	HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
@@ -15,7 +18,8 @@ int WINAPI WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd) {
+	_In_ int nShowCmd) 
+{
 	GdiplusStartupInput gsi;
 	ULONG_PTR token;
 	GdiplusStartup(&token, &gsi, nullptr);
@@ -57,6 +61,9 @@ int WINAPI WinMain(
 		return 0;
 	}
 
+	// 게임 시작
+	gLogic.Init(hwnd);
+
 	ShowWindow(hwnd, nShowCmd);
 	UpdateWindow(hwnd);
 
@@ -65,6 +72,9 @@ int WINAPI WinMain(
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+
+	// 게임 종료
+	gLogic.Release();
 
 	GdiplusShutdown(token);
 	return static_cast<int>(msg.wParam);
@@ -75,12 +85,17 @@ void OnPaint(HWND hwnd) {
 	HDC hdc = BeginPaint(hwnd, &ps);
 	Graphics graphics(hdc);
 
+	// 이미지 그리기
+	gLogic.Draw(graphics);
+
 	EndPaint(hwnd, &ps);
 }
 
 LRESULT WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch (message) {
 	case WM_LBUTTONUP:
+		// 클릭 이벤트 처리
+		gLogic.OnClick(LOWORD(lParam), HIWORD(lParam));
 		break;
 	case WM_PAINT:
 		OnPaint(hwnd);
