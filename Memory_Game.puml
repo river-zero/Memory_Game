@@ -1,0 +1,41 @@
+@startuml
+
+class GameLogic {
+  - BOARD_ROW: int
+  - BOARD_COL: int
+  - mCountRect: RectF
+  - mBackground: unique_ptr<Image>
+  - mDeck: list<Card>
+  - mClickCount: int
+  - mHwnd: HWND
+  - mpPrevious: Card*
+
+  + Init(hwnd: HWND): void
+  + Release(): void
+  + Draw(graphics: Graphics): void
+  + OnClick(x: int, y: int): void
+  - CreateCards(): void
+}
+
+class Card {
+  - mBack: unique_ptr<Image>
+  - mFront: unique_ptr<Image>
+  - mX: int
+  - mY: int
+  - mIsFront: bool
+  - mType: Type
+  - mHwnd: HWND
+  - mIndex: int
+
+  + Card(hwnd: HWND, index: int, type: Type, x: int, y: int)
+  + CheckClicked(x: int, y: int): bool
+  + Flip(isFront: bool): void
+  + Draw(graphics: Graphics): void
+  + Invalidate(): void
+  + GetType(): Type
+  + GetIndex(): int
+}
+
+GameLogic --|> Card
+
+@enduml

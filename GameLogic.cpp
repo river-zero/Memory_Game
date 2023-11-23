@@ -56,12 +56,14 @@ void Memory::GameLogic::CreateCards() {
 	}
 }
 
+// 게임을 초기화하고 배경 이미지 로드
 void Memory::GameLogic::Init(HWND hwnd) {
 	mHwnd = hwnd;
 	mBackground = std::make_unique<Image>(L"Images/Board.jpg");
 	CreateCards();
 }
 
+// 게임 자원 해제
 void Memory::GameLogic::Release() {
 	mDeck.clear();
 	mBackground.reset();

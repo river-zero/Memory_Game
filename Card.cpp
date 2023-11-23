@@ -71,6 +71,7 @@ void Memory::Card::Draw(Gdiplus::Graphics& graphics) {
 }
 
 void Memory::Card::Invalidate() {
+	// 카드 이미지를 다시 그리도록 직접 윈도우에 요청
 	// rct로 지정된 영역을 무효화
 	RECT rct{ mX, mY, 
 		static_cast<LONG>(mX + mFront->GetWidth()),

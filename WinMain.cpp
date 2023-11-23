@@ -10,10 +10,9 @@ const wchar_t gClassName[] = L"WindowClass";
 
 Memory::GameLogic gLogic;
 
-LRESULT CALLBACK WindowProc(
-	HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
-);
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+// 윈도우 클래스를 등록하고 생성한 후 메시지 루프를 돌림
 int WINAPI WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -91,10 +90,10 @@ void OnPaint(HWND hwnd) {
 	EndPaint(hwnd, &ps);
 }
 
+// 클릭, 그리기, 윈도우 종료 이벤트 처리
 LRESULT WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch (message) {
 	case WM_LBUTTONUP:
-		// 클릭 이벤트 처리
 		gLogic.OnClick(LOWORD(lParam), HIWORD(lParam));
 		break;
 	case WM_PAINT:
