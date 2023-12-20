@@ -2,46 +2,56 @@
 
 #include "Card.h"
 #include <list>
+#include <string>
 
 namespace Memory {
 	class GameLogic {
 	private:
-		// ì¹´ë“œì˜ í–‰ê³¼ ì—´ ì •ì˜
+		// Ä«µåÀÇ Çà°ú ¿­ Á¤ÀÇ
 		const int BOARD_ROW = 5;
 		const int BOARD_COL = 8;
 
-		// í´ë¦­ìˆ˜ë¥¼ í‘œí˜„í•˜ê¸° ìœ„í•œ ì§ì‚¬ê°í˜• ì¢Œí‘œ ì˜ì—­
-		const Gdiplus::RectF mCountRect{ 885.0f, 60.0f, 120.0f, 50.0f };
+		// Å¬¸¯¼ö¸¦ Ç¥ÇöÇÏ±â À§ÇÑ Á÷»ç°¢Çü ÁÂÇ¥ ¿µ¿ª
+		const Gdiplus::RectF mCountRect1{ 945.0f, 25.0f, 120.0f, 50.0f };
+		const Gdiplus::RectF mCountRect2{ 945.0f, 75.0f, 120.0f, 50.0f };
 
-		// ë°°ê²½ ì´ë¯¸ì§€ë¥¼ ê¸°ë¦¬í‚¬ í¬ì¸í„°
+		// ½ÂÀÚ¸¦ Ç¥½ÃÇÏ±â À§ÇÑ Á÷»ç°¢Çü ÁÂÇ¥ ¿µ¿ª
+		const Gdiplus::RectF mWinnerRect{ 250.0f, 220.0f, 500.0f, 300.0f };
+
+		// ¹è°æ ÀÌ¹ÌÁö¸¦ ±â¸®Å³ Æ÷ÀÎÅÍ
 		std::unique_ptr<Gdiplus::Image> mBackground;
 
-		// ì¹´ë“œ ë”ë¯¸
+		// Ä«µå ´õ¹Ì
 		std::list<Card> mDeck;
 
-		// í´ë¦­ìˆ˜
-		int mClickCount;
-
-		// ìœˆë„ìš° í•¸ë“¤
+		// À©µµ¿ì ÇÚµé
 		HWND mHwnd;
 
-		// ë¹„êµë¥¼ ìœ„í•´ ì´ì „ì— í´ë¦­í•œ ì¹´ë“œë¥¼ ê°€ë¦¬í‚¬ í¬ì¸í„°
+		// ºñ±³¸¦ À§ÇØ ÀÌÀü¿¡ Å¬¸¯ÇÑ Ä«µå¸¦ °¡¸®Å³ Æ÷ÀÎÅÍ
 		Card* mpPrevious;
 
+		// 2ÀÎ¿ë °ÔÀÓÀ¸·Î ±¸ÇöÇÏ±â À§ÇØ »ç¿ëÇÒ º¯¼öµé
+		int mPlayerTurn;
+		int mPlayer1Score;
+		int mPlayer2Score;
+
 	private:
-		// ì¹´ë“œ ë”ë¯¸ë¥¼ ìƒì„±
+		// Ä«µå ´õ¹Ì¸¦ »ı¼º
 		void CreateCards();
 
+		// ÇÃ·¹ÀÌ¾î ÅÏ ±³Ã¼
+		void SwitchPlayerTurn();
+
 	public:
-		// ìƒì„±ìì™€ ì†Œë©¸ì ëŒ€ì‹  ì•„ë˜ í•¨ìˆ˜ë¥¼ ì œê³µ
-		// ê°ì²´ì˜ ìƒì„±ê³¼ í•´ì œë¥¼ ì§ì ‘ ì œì–´ ê°€ëŠ¥
+		// »ı¼ºÀÚ¿Í ¼Ò¸êÀÚ ´ë½Å ¾Æ·¡ ÇÔ¼ö¸¦ Á¦°ø
+		// °´Ã¼ÀÇ »ı¼º°ú ÇØÁ¦¸¦ Á÷Á¢ Á¦¾î °¡´É
 		void Init(HWND hwnd);
 		void Release();
 
-		// ë°°ê²½, ì¹´ë“œ ë”ë¯¸, í´ë¦­ìˆ˜ë¥¼ ê·¸ë¦¼
+		// ¹è°æ, Ä«µå ´õ¹Ì, Å¬¸¯¼ö¸¦ ±×¸²
 		void Draw(Gdiplus::Graphics& graphics);
 
-		// ì–´ë–¤ ì¹´ë“œê°€ í´ë¦­ë˜ì—ˆëŠ”ì§€ íŒë‹¨
+		// ¾î¶² Ä«µå°¡ Å¬¸¯µÇ¾ú´ÂÁö ÆÇ´Ü
 		void OnClick(int x, int y);
 	};
 }

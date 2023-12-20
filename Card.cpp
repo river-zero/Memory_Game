@@ -4,15 +4,15 @@
 using namespace Gdiplus;
 
 Memory::Card::Card(HWND hwnd, int index, Type type, int x, int y) :
-	// ë©¤ë²„ ë³€ìˆ˜ ëª¨ë‘ ì´ˆê¸°í™”
+	// ¸â¹ö º¯¼ö ¸ğµÎ ÃÊ±âÈ­
 	mHwnd(hwnd),
 	mIndex(index),
 	mType(type),
 	mX(x),
 	mY(y),
-	mIsFront(false) 
+	mIsFront(false)
 {
-	// ì•ë©´ ì¢…ë¥˜ì— ë”°ë¥¸ ì´ë¯¸ì§€ ê²½ë¡œ ì„¤ì •
+	// ¾Õ¸é Á¾·ù¿¡ µû¸¥ ÀÌ¹ÌÁö °æ·Î ¼³Á¤
 	std::wstring filename = L"Images/";
 	switch (mType) {
 	case Type::Ace:
@@ -30,22 +30,22 @@ Memory::Card::Card(HWND hwnd, int index, Type type, int x, int y) :
 	}
 
 	mFront = std::make_unique<Image>(filename.c_str());
-	// Gdiplus::Image ìƒì„±ìëŠ” C ìŠ¤íƒ€ì¼ì˜ ë¬¸ìì—´ í•„ìš”
+	// Gdiplus::Image »ı¼ºÀÚ´Â C ½ºÅ¸ÀÏÀÇ ¹®ÀÚ¿­ ÇÊ¿ä
 	mBack = std::make_unique<Image>(L"Images/Back.png");
-	// ë’·ë©´ì€ í•­ìƒ ë™ì¼
+	// µŞ¸éÀº Ç×»ó µ¿ÀÏ
 }
 
 bool Memory::Card::CheckClicked(int x, int y) {
-	// ë§ˆìš°ìŠ¤ ìœ„ì¹˜ê°€ ì´ë¯¸ì§€ ë²”ìœ„ì— ì†í•˜ëŠ”ì§€ í™•ì¸
+	// ¸¶¿ì½º À§Ä¡°¡ ÀÌ¹ÌÁö ¹üÀ§¿¡ ¼ÓÇÏ´ÂÁö È®ÀÎ
 	if (x >= mX && y >= mY &&
 		x <= static_cast<int>(mX + mFront->GetWidth()) &&
 		y <= static_cast<int>(mY + mFront->GetHeight())) {
-		// ì•ë©´ì´ ì•„ë‹ˆë¼ë©´ ë’¤ì§‘ê¸°
+		// ¾Õ¸éÀÌ ¾Æ´Ï¶ó¸é µÚÁı±â
 		Flip(!mIsFront);
 		return true;
 	}
 
-	// GDI+ì˜ ê¸°ëŠ¥ì„ ì‚¬ìš©í•œë‹¤ë©´ ì´ë ‡ê²Œë„ ê°€ëŠ¥
+	// GDI+ÀÇ ±â´ÉÀ» »ç¿ëÇÑ´Ù¸é ÀÌ·¸°Ôµµ °¡´É
 	/*Rect rct(mX, mY, mFront->GetWidth(), mFront->GetHeight());
 	if (rct.Contains(x, y)) {
 		Flip(!mIsFront);
@@ -56,24 +56,25 @@ bool Memory::Card::CheckClicked(int x, int y) {
 }
 
 void Memory::Card::Flip(bool isFront) {
-	// ìƒíƒœ ë³€ê²½ ë° í™”ë©´ ì—…ë°ì´íŠ¸ê°€ ìš”ì²­
+	// »óÅÂ º¯°æ ¹× È­¸é ¾÷µ¥ÀÌÆ®°¡ ¿äÃ»
 	mIsFront = isFront;
 	Invalidate();
 }
 
 void Memory::Card::Draw(Gdiplus::Graphics& graphics) {
-	// mIsFront ê°’ì— ë”°ë¼ ì•ë©´ ë˜ëŠ” ë’·ë©´ ì´ë¯¸ì§€ë¥¼ ê·¸ë¦¼
+	// mIsFront °ª¿¡ µû¶ó ¾Õ¸é ¶Ç´Â µŞ¸é ÀÌ¹ÌÁö¸¦ ±×¸²
 	if (mIsFront) {
 		graphics.DrawImage(mFront.get(), mX, mY, mFront->GetWidth(), mFront->GetHeight());
-	} else {
+	}
+	else {
 		graphics.DrawImage(mBack.get(), mX, mY, mFront->GetWidth(), mFront->GetHeight());
 	}
 }
 
 void Memory::Card::Invalidate() {
-	// ì¹´ë“œ ì´ë¯¸ì§€ë¥¼ ë‹¤ì‹œ ê·¸ë¦¬ë„ë¡ ì§ì ‘ ìœˆë„ìš°ì— ìš”ì²­
-	// rctë¡œ ì§€ì •ëœ ì˜ì—­ì„ ë¬´íš¨í™”
-	RECT rct{ mX, mY, 
+	// Ä«µå ÀÌ¹ÌÁö¸¦ ´Ù½Ã ±×¸®µµ·Ï Á÷Á¢ À©µµ¿ì¿¡ ¿äÃ»
+	// rct·Î ÁöÁ¤µÈ ¿µ¿ªÀ» ¹«È¿È­
+	RECT rct{ mX, mY,
 		static_cast<LONG>(mX + mFront->GetWidth()),
 		static_cast<LONG>(mY + mFront->GetHeight()) };
 	InvalidateRect(mHwnd, &rct, false);

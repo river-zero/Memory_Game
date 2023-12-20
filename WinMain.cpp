@@ -12,12 +12,12 @@ Memory::GameLogic gLogic;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-// ìœˆë„ìš° í´ë˜ìŠ¤ë¥¼ ë“±ë¡í•˜ê³  ìƒì„±í•œ í›„ ë©”ì‹œì§€ ë£¨í”„ë¥¼ ëŒë¦¼
+// À©µµ¿ì Å¬·¡½º¸¦ µî·ÏÇÏ°í »ı¼ºÇÑ ÈÄ ¸Ş½ÃÁö ·çÇÁ¸¦ µ¹¸²
 int WINAPI WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPSTR lpCmdLine,
-	_In_ int nShowCmd) 
+	_In_ int nShowCmd)
 {
 	GdiplusStartupInput gsi;
 	ULONG_PTR token;
@@ -46,7 +46,7 @@ int WINAPI WinMain(
 		gClassName,
 		L"Memory Game",
 		WS_OVERLAPPED | WS_SYSMENU,
-		CW_USEDEFAULT, 
+		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		wr.right - wr.left,
 		wr.bottom - wr.top,
@@ -60,7 +60,7 @@ int WINAPI WinMain(
 		return 0;
 	}
 
-	// ê²Œì„ ì‹œì‘
+	// °ÔÀÓ ½ÃÀÛ
 	gLogic.Init(hwnd);
 
 	ShowWindow(hwnd, nShowCmd);
@@ -72,7 +72,7 @@ int WINAPI WinMain(
 		DispatchMessage(&msg);
 	}
 
-	// ê²Œì„ ì¢…ë£Œ
+	// °ÔÀÓ Á¾·á
 	gLogic.Release();
 
 	GdiplusShutdown(token);
@@ -84,13 +84,13 @@ void OnPaint(HWND hwnd) {
 	HDC hdc = BeginPaint(hwnd, &ps);
 	Graphics graphics(hdc);
 
-	// ì´ë¯¸ì§€ ê·¸ë¦¬ê¸°
+	// ÀÌ¹ÌÁö ±×¸®±â
 	gLogic.Draw(graphics);
 
 	EndPaint(hwnd, &ps);
 }
 
-// í´ë¦­, ê·¸ë¦¬ê¸°, ìœˆë„ìš° ì¢…ë£Œ ì´ë²¤íŠ¸ ì²˜ë¦¬
+// Å¬¸¯, ±×¸®±â, À©µµ¿ì Á¾·á ÀÌº¥Æ® Ã³¸®
 LRESULT WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch (message) {
 	case WM_LBUTTONUP:

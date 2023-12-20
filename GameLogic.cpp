@@ -6,15 +6,15 @@
 using namespace Gdiplus;
 
 void Memory::GameLogic::CreateCards() {
-	// ì¹´ë“œ ì¢…ë¥˜ë¥¼ ì €ì¥í•  ë²¡í„°
+	// Ä«µå Á¾·ù¸¦ ÀúÀåÇÒ º¤ÅÍ
 	std::vector<Type> types;
 
-	// ëª¨ë“  ì¹´ë“œê°€ ìƒì„±ë  ë•Œê¹Œì§€ ë£¨í”„ ì‹¤í–‰
+	// ¸ğµç Ä«µå°¡ »ı¼ºµÉ ¶§±îÁö ·çÇÁ ½ÇÇà
 	while (types.size() < static_cast<size_t>(BOARD_COL * BOARD_ROW)) {
-		// ê· ë“±í•˜ê²Œ ì¹´ë“œ ì¢…ë¥˜ë¥¼ ì„ê¸° ìœ„í•¨
+		// ±ÕµîÇÏ°Ô Ä«µå Á¾·ù¸¦ ¼¯±â À§ÇÔ
 		int mod = types.size() % 8;
 
-		// ì¹´ë“œ ì¢…ë¥˜ë¥¼ ì„ íƒí•˜ê³  ì§ì´ ë§ë„ë¡ ê° ì¹´ë“œëŠ” ë‘ ê°œì”© ì¶”ê°€
+		// Ä«µå Á¾·ù¸¦ ¼±ÅÃÇÏ°í Â¦ÀÌ ¸Âµµ·Ï °¢ Ä«µå´Â µÎ °³¾¿ Ãß°¡
 		switch (mod) {
 		case 0:
 			types.push_back(Type::Ace);
@@ -35,8 +35,8 @@ void Memory::GameLogic::CreateCards() {
 		}
 	}
 
-	// ê· ë“±í•œ ë¶„í¬ë¥¼ ê°€ì§„ mt19937 ëœë¤
-	// ë¬´ì‘ìœ„ë¡œ ì¹´ë“œ ìˆœì„œë¥¼ ì„ê¸°
+	// ±ÕµîÇÑ ºĞÆ÷¸¦ °¡Áø mt19937 ·£´ı
+	// ¹«ÀÛÀ§·Î Ä«µå ¼ø¼­¸¦ ¼¯±â
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::shuffle(types.begin(), types.end(), gen);
@@ -44,57 +44,83 @@ void Memory::GameLogic::CreateCards() {
 	int index{};
 	int posX{ 15 }, posY{ 15 };
 
-	// ì¹´ë“œë¥¼ ìƒì„±í•˜ê³  ê²Œì„ ë³´ë“œì— ë°°ì¹˜
+	// Ä«µå¸¦ »ı¼ºÇÏ°í °ÔÀÓ º¸µå¿¡ ¹èÄ¡
 	for (int x = 0; x < BOARD_COL; x++) {
 		posY = 15;
 		for (int y = 0; y < BOARD_ROW; y++) {
 			mDeck.push_back(Card(mHwnd, index, types[index++], posX, posY));
-			posY += 140 + 10; // ì¹´ë“œ ì‚¬ì´ ê°„ê²©ì€ 10
+			posY += 140 + 10; // Ä«µå »çÀÌ °£°İÀº 10
 		}
 
 		posX += 100 + 10;
 	}
 }
 
-// ê²Œì„ì„ ì´ˆê¸°í™”í•˜ê³  ë°°ê²½ ì´ë¯¸ì§€ ë¡œë“œ
+void Memory::GameLogic::SwitchPlayerTurn() {
+	mPlayerTurn = (mPlayerTurn == 1) ? 2 : 1;
+}
+
+// °ÔÀÓÀ» ÃÊ±âÈ­ÇÏ°í ¹è°æ ÀÌ¹ÌÁö ·Îµå
 void Memory::GameLogic::Init(HWND hwnd) {
 	mHwnd = hwnd;
 	mBackground = std::make_unique<Image>(L"Images/Board.jpg");
 	CreateCards();
+
+	mPlayerTurn = 1;
+	mPlayer1Score = 0;
+	mPlayer2Score = 0;
 }
 
-// ê²Œì„ ìì› í•´ì œ
+// °ÔÀÓ ÀÚ¿ø ÇØÁ¦
 void Memory::GameLogic::Release() {
 	mDeck.clear();
 	mBackground.reset();
 }
 
 void Memory::GameLogic::Draw(Gdiplus::Graphics& graphics) {
-	// ë°°ê²½ ì´ë¯¸ì§€
+	// ¹è°æ ÀÌ¹ÌÁö
 	graphics.DrawImage(mBackground.get(), 0, 0, mBackground->GetWidth(), mBackground->GetHeight());
 
-	// ì¹´ë“œ ë”ë¯¸ ì´ë¯¸ì§€
+	// Ä«µå ´õ¹Ì ÀÌ¹ÌÁö
 	for (auto& card : mDeck) {
 		card.Draw(graphics);
 	}
 
-	// "í´ë¦­ìˆ˜:" í…ìŠ¤íŠ¸
-	Gdiplus::PointF pos(895.0f, 25.0f);
+	// ÇÃ·¹ÀÌ¾î1 Å¬¸¯¼ö Ç¥½Ã
+	Gdiplus::PointF pos1(895.0f, 25.0f);
 	Gdiplus::SolidBrush brush(Gdiplus::Color(0, 0, 0));
-	Gdiplus::Font font(L"ìƒì£¼ë‹¤ì •ë‹¤ê°ì²´", 30);
-	graphics.DrawString(L"í´ë¦­ìˆ˜:", -1, &font, pos, &brush);
-
-	// ì‹¤ì œ í´ë¦­ìˆ˜
+	Gdiplus::Font font(L"¸¼Àº°íµñ", 25);
+	graphics.DrawString(L"P1", -1, &font, pos1, &brush);
 	Gdiplus::StringFormat format;
-	format.SetAlignment(StringAlignmentCenter);
-	format.SetLineAlignment(StringAlignmentCenter);
-	graphics.DrawString(std::to_wstring(mClickCount).c_str(), -1, &font, mCountRect, &format, &brush);
+	graphics.DrawString(std::to_wstring(mPlayer1Score).c_str(), -1, &font, mCountRect1, &format, &brush);
+
+	// ÇÃ·¹ÀÌ¾î2 Å¬¸¯¼ö Ç¥½Ã
+	Gdiplus::PointF pos2(895.0f, 75.0f);
+	graphics.DrawString(L"P2", -1, &font, pos2, &brush);
+	graphics.DrawString(std::to_wstring(mPlayer2Score).c_str(), -1, &font, mCountRect2, &format, &brush);
+
+	// ¸ğµç Ä«µå°¡ »ç¶óÁö¸é °ÔÀÓ °á°ú È®ÀÎ
+	if (mDeck.empty()) {
+		std::wstring winnerMessage;
+		if (mPlayer1Score > mPlayer2Score) {
+			winnerMessage = L"½ÂÀÚ´Â P1ÀÔ´Ï´Ù!";
+		} else if (mPlayer1Score < mPlayer2Score) {
+			winnerMessage = L"½ÂÀÚ´Â P2ÀÔ´Ï´Ù!";
+		} else {
+			winnerMessage = L"ºñ°å½À´Ï´Ù!";
+		}
+
+		Gdiplus::Font winnerFont(L"¸¼Àº°íµñ", 30, Gdiplus::FontStyleBold);
+		format.SetAlignment(StringAlignmentCenter);
+		format.SetLineAlignment(StringAlignmentCenter);
+		graphics.DrawString(winnerMessage.c_str(), -1, &winnerFont, mWinnerRect, &format, &brush);
+	}
 }
 
 void Memory::GameLogic::OnClick(int x, int y) {
 	Card* pCard{};
-	
-	// í´ë¦­í•œ ì¹´ë“œê°€ ìˆëŠ”ì§€ í™•ì¸
+
+	// Å¬¸¯ÇÑ Ä«µå°¡ ÀÖ´ÂÁö È®ÀÎ
 	for (auto& card : mDeck) {
 		if (card.CheckClicked(x, y)) {
 			pCard = &card;
@@ -103,35 +129,68 @@ void Memory::GameLogic::OnClick(int x, int y) {
 	}
 
 	if (pCard) {
-		// í´ë¦­ìˆ˜ ì¦ê°€í•˜ê³  ì—…ë°ì´íŠ¸ ìš”ì²­
-		mClickCount++;
-		RECT rct{ 
-			static_cast<LONG>(mCountRect.GetLeft()),
-			static_cast<LONG>(mCountRect.GetTop()),
-			static_cast<LONG>(mCountRect.GetRight()),
-			static_cast<LONG>(mCountRect.GetBottom()) };
+		// Á¡¼ö ¾÷µ¥ÀÌÆ®
+		RECT rct;
+		if (mPlayerTurn == 1) {
+			rct = {
+				static_cast<LONG>(mCountRect1.GetLeft()),
+				static_cast<LONG>(mCountRect1.GetTop()),
+				static_cast<LONG>(mCountRect1.GetRight()),
+				static_cast<LONG>(mCountRect1.GetBottom())
+			};
+		} else {
+			rct = {
+				static_cast<LONG>(mCountRect2.GetLeft()),
+				static_cast<LONG>(mCountRect2.GetTop()),
+				static_cast<LONG>(mCountRect2.GetRight()),
+				static_cast<LONG>(mCountRect2.GetBottom())
+			};
+		}
 		InvalidateRect(mHwnd, &rct, true);
 	}
 
 	if (mpPrevious == nullptr) {
-		// í´ë¦­í•œ ì´ì „ ì¹´ë“œê°€ ì—†ë‹¤ë©´ ì§€ê¸ˆ ì¹´ë“œë¥¼ ì„ íƒ
+		// Å¬¸¯ÇÑ ÀÌÀü Ä«µå°¡ ¾ø´Ù¸é Áö±İ Ä«µå¸¦ ¼±ÅÃ
 		mpPrevious = pCard;
-	} else {
-		// ê°™ì€ ì¹´ë“œë¥¼ ì„ íƒí•œ ê²ƒì´ ì•„ë‹ˆë¼ë©´
+	}
+	else {
+		// °°Àº Ä«µå¸¦ ¼±ÅÃÇÑ °ÍÀÌ ¾Æ´Ï¶ó¸é
 		if (pCard != nullptr && mpPrevious != nullptr && mpPrevious != pCard) {
-			// ì§ì´ ë§ëŠ” ê²½ìš°
+			// Â¦ÀÌ ¸Â´Â °æ¿ì
 			if (pCard->GetType() == mpPrevious->GetType()) {
 				mpPrevious->Invalidate();
 				pCard->Invalidate();
 
+				// ÇØ´ç ÇÃ·¹ÀÌ¾îÀÇ Á¡¼ö Áõ°¡
+				if (mPlayerTurn == 1) {
+					mPlayer1Score++;
+				} else {
+					mPlayer2Score++;
+				}
+
 				mDeck.remove_if([&](Card& card) {return card.GetIndex() == pCard->GetIndex(); });
 				mDeck.remove_if([&](Card& card) {return card.GetIndex() == mpPrevious->GetIndex(); });
 
-			} else {
+				if (mDeck.empty()) {
+					// È­¸é Á¤Áß¾Ó¿¡ ÇØ´ç ¸Ş½ÃÁö Ç¥½Ã
+					RECT rct;
+					rct = {
+						static_cast<LONG>(mWinnerRect.GetLeft()),
+						static_cast<LONG>(mWinnerRect.GetTop()),
+						static_cast<LONG>(mWinnerRect.GetRight()),
+						static_cast<LONG>(mWinnerRect.GetBottom())
+					};
+					InvalidateRect(mHwnd, &rct, true);
+				}
+			}
+			else {
 				UpdateWindow(mHwnd);
 				Sleep(300);
 				pCard->Flip(false);
 				mpPrevious->Flip(false);
+
+				// Â¦ ¸ÂÃß±â ½ÇÆĞ ½Ã ÇÃ·¹ÀÌ¾î ÅÏ ±³Ã¼
+				SwitchPlayerTurn();
 			}
 		}
 

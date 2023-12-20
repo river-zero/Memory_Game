@@ -5,7 +5,7 @@
 #include <memory>
 
 namespace Memory {
-    // ì¹´ë“œì˜ ì¢…ë¥˜ ì •ì˜
+    // Ä«µåÀÇ Á¾·ù Á¤ÀÇ
     enum class Type {
         Seven,
         King,
@@ -15,7 +15,7 @@ namespace Memory {
 
     class Card {
     private:
-        // ì•ë©´ê³¼ ë’·ë©´ ì´ë¯¸ì§€ë¥¼ ê°€ë¦¬í‚¬ í¬ì¸í„°
+        // ¾Õ¸é°ú µŞ¸é ÀÌ¹ÌÁö¸¦ °¡¸®Å³ Æ÷ÀÎÅÍ
         std::unique_ptr<Gdiplus::Image> mBack;
         std::unique_ptr<Gdiplus::Image> mFront;
 
@@ -29,16 +29,16 @@ namespace Memory {
     public:
         Card(HWND hwnd, int index, Type type, int x, int y);
 
-        // ì§€ì •ëœ ì¢Œí‘œì—ì„œ í´ë¦­ì„ í™•ì¸
+        // ÁöÁ¤µÈ ÁÂÇ¥¿¡¼­ Å¬¸¯À» È®ÀÎ
         bool CheckClicked(int x, int y);
 
-        // ì¹´ë“œ ë’¤ì§‘ê¸°
+        // Ä«µå µÚÁı±â
         void Flip(bool isFront);
 
-        // ì¹´ë“œ ì´ë¯¸ì§€ ê·¸ë¦¬ê¸°
+        // Ä«µå ÀÌ¹ÌÁö ±×¸®±â
         void Draw(Gdiplus::Graphics& graphics);
 
-        // ì¹´ë“œ ì´ë¯¸ì§€ë¥¼ ë‹¤ì‹œ ê·¸ë¦¬ë„ë¡ ì§ì ‘ ìœˆë„ìš°ì— ìš”ì²­
+        // Ä«µå ÀÌ¹ÌÁö¸¦ ´Ù½Ã ±×¸®µµ·Ï Á÷Á¢ À©µµ¿ì¿¡ ¿äÃ»
         void Invalidate();
 
         Type GetType() const { return mType; }
