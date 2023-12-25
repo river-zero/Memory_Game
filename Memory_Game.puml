@@ -42,6 +42,6 @@ class Card {
   + GetIndex(): int
 }
 
-GameLogic --|> Card
+GameLogic o--> Card
 
 @enduml
